@@ -71,6 +71,22 @@ class Restaurant_by_id(Resource):
         )
 
         return response
+    
+    def delete(self, id):
+        restaurant = Restaurant.query.filter_by(id=id).first()
+
+        db.session.delete(restaurant)
+        db.session.commit()
+        
+        response_dict = {"message":"Restaurant deleted succesfully"}
+        response = make_response(
+            jsonify(response_dict),
+            200
+        )
+
+        return response
+
+
 
 api.add_resource(Restaurant_by_id, '/restaurant/<int:id>')
 
