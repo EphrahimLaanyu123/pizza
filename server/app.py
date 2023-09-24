@@ -63,10 +63,28 @@ class Restaurant_by_id(Resource):
     def get(self, id):
         restaurant = Restaurant.query.filter_by(id=id).first()
 
-        restaurant_dict  = restaurant.to_dict()
+        if restaurant is None:
+            response_dict = {"error": "Restaurant not found"}
+            response = make_response(
+                jsonify(response_dict),
+                404
+            )
+            return response
+
+        pizzas = RestaurantPizza.query.filter_by(restaurant_id=restaurant.id).all()
+
+
+        pizzas_dict = [pizza.to_dict() for pizza in pizzas]
+
+        response_dict = {
+            "id": restaurant.id,
+            "name": restaurant.name,
+            "address": restaurant.address,
+            "pizzas": pizzas_dict
+        }
 
         response = make_response(
-            jsonify(restaurant_dict),
+            jsonify(response_dict),
             200
         )
 
@@ -75,9 +93,17 @@ class Restaurant_by_id(Resource):
     def delete(self, id):
         restaurant = Restaurant.query.filter_by(id=id).first()
 
+        if restaurant is None:
+            response_dict = {"error": "Restaurant not found"}
+            response = make_response(
+                jsonify(response_dict),
+                404
+            )
+            return response
+
         db.session.delete(restaurant)
         db.session.commit()
-        
+
         response_dict = {"message":"Restaurant deleted succesfully"}
         response = make_response(
             jsonify(response_dict),
@@ -85,7 +111,6 @@ class Restaurant_by_id(Resource):
         )
 
         return response
-
 
 
 api.add_resource(Restaurant_by_id, '/restaurant/<int:id>')
@@ -99,6 +124,14 @@ class Restaurant_pizzas(Resource):
             pizza_id=request.json['pizza_id'],
             restaurant_id=request.json['restaurant_id']
         )
+
+        if not new_restaurant_pizza.is_valid():
+            response_dict = {"errors": ["validation errors"]}
+            response = make_response(
+                jsonify(response_dict),
+                400
+            )
+            return response
 
         db.session.add(new_restaurant_pizza)
         db.session.commit()
@@ -116,8 +149,8 @@ class Restaurant_pizzas(Resource):
             201
         )
 
-
         return response
+
 api.add_resource(Restaurant_pizzas, '/restaurant_pizzas')
 
 
