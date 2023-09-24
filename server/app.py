@@ -19,40 +19,60 @@ db.init_app(app)
 
 api = Api(app)
 
-class Index(Resource):
 
-    def get(self):
-
-        response_dict = {
-            "index": "Welcome to the Newsletter RESTful API",
-        }
-
-        response = make_response(
-            jsonify(response_dict),
-            200,
-        )
-
-        return response
-
-api.add_resource(Index, '/')
 class Pizzas(Resource):
 
     def get(self):
-        
-        response_dict_list = [n.to_dict() for n in Pizza.query.all()]
+        pizzas = []
+
+        all_pizzas = Pizza.query.all()
+
+        for pizza in all_pizzas:
+            pizzas.append(pizza.to_dict()) 
 
         response = make_response(
-            jsonify(response_dict_list), 
+            jsonify(pizzas),
             200
         )
 
         return response
 
+
 api.add_resource(Pizzas, '/pizzas')
+
+class Restaurants(Resource):
+
+    def get(self):
+        restaurants = []
+        all_restaurants = Restaurant.query.all()
+
+        for restaurant in all_restaurants:
+            restaurants.append(restaurant.to_dict())
         
+        response  = make_response(
+            jsonify(restaurants),
+            200
+        )
 
+        return response
 
+api.add_resource(Restaurants, '/restaurants')
+        
+class Restaurant_by_id(Resource):
+
+    def get(self, id):
+        restaurant = Restaurant.query.filter_by(id=id).first()
+
+        restaurant_dict  = restaurant.to_dict()
+
+        response = make_response(
+            jsonify(restaurant_dict),
+            200
+        )
+
+        return response
+
+api.add_resource(Restaurant_by_id, '/restaurant/<int:id>')
 
 if __name__ == '__main__':
-    api.add_resource(Pizzas, '/pizzas')
     app.run(port=5555, debug=True)

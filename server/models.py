@@ -55,3 +55,14 @@ class Restaurant(db.Model):
     restaurant_pizzas = db.relationship('RestaurantPizza', back_populates='restaurant')
 
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "address": self.address
+        }
+    
+
+
+
+
