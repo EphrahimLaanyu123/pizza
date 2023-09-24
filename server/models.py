@@ -20,6 +20,13 @@ class Pizza(db.Model):
     # Add relationship to RestaurantPizza class
     restaurant_pizzas = db.relationship('RestaurantPizza', back_populates='pizza')
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "ingredients": self.ingredients,
+        }
+
 # Cretaed RestaurantPizza model
 class RestaurantPizza(db.Model):
     __tablename__ = 'restaurant_pizzas'
