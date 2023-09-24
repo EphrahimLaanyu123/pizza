@@ -19,7 +19,7 @@ db.init_app(app)
 
 
 
-# Add more routes and views as needed
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
