@@ -41,6 +41,15 @@ class RestaurantPizza(db.Model):
     # Add relationships to Restaurant and Pizza
     restaurant = db.relationship('Restaurant', back_populates='restaurant_pizzas')
     pizza = db.relationship('Pizza', back_populates='restaurant_pizzas')
+    
+
+    def to_dict(self):
+        return {
+            "price": self.price,
+            "pizza_id": self.pizza_id,
+            "restaurant_id": self.restaurant_id,
+        }
+
 
 
 # Added Restaurant class

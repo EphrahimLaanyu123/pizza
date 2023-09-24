@@ -1,4 +1,4 @@
-from flask import Flask, make_response, jsonify
+from flask import Flask, make_response, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from models import Pizza, RestaurantPizza, Restaurant, db
@@ -89,6 +89,53 @@ class Restaurant_by_id(Resource):
 
 
 api.add_resource(Restaurant_by_id, '/restaurant/<int:id>')
+
+# class Restaurant_pizzas(Resource):
+
+#     def post(self):
+
+#         new_restaurant_pizza = RestaurantPizza(
+#             price = request.form['price'],
+#             pizza_id = request.form['pizza_id'],
+#             restaurant_id = request.form['restaurant_id']
+#         )
+
+#         db.session.add(new_restaurant_pizza)
+#         db.session.commit()
+
+#         response_dict = new_restaurant_pizza.to_dict()
+
+#         response = make_response(
+#             jsonify(response_dict),
+#             201,
+#         )
+
+#         return response
+# api.add_resource(Restaurant_pizzas, '/restaurant_pizzas')
+
+class Restaurant_pizzas(Resource):
+
+    def post(self):
+        new_restaurant_pizza = RestaurantPizza(
+            price=request.json['price'],
+            pizza_id=request.json['pizza_id'],
+            restaurant_id=request.json['restaurant_id']
+        )
+
+        db.session.add(new_restaurant_pizza)
+        db.session.commit()
+
+        response_dict = new_restaurant_pizza.to_dict()
+
+        response = make_response(
+            jsonify(response_dict),
+            201,
+        )
+
+        return response
+api.add_resource(Restaurant_pizzas, '/restaurant_pizzas')
+
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
