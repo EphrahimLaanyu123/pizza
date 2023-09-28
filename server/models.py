@@ -50,9 +50,9 @@ class RestaurantPizza(db.Model):
             "restaurant_id": self.restaurant_id,
         }
     def is_valid(self):
-        if self.price < 0:
+        if self.price < 0: # Check if the price of the RestaurantPizza is less than 0
             return False
-        return True
+        return True   # If the price is not less than 0, it is valid
 
 
 # Added Restaurant class
